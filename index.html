@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Commit Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --bg2: #161b22;
+            --bg3: #1c2333;
+            --fg: #e6edf3;
+            --muted: #7d8590;
+            --accent: #3fb950;
+            --accent2: #238636;
+            --accent3: #196c2e;
+            --accent4: #0e4429;
+            --border: #30363d;
+            --card: #0d1117;
+            --danger: #f85149;
+            --warning: #d29922;
+            --info: #58a6ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(63,185,80,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow-2 {
+            position: fixed;
+            bottom: -300px;
+            left: -200px;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(35,134,54,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(48,54,61,0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(48,54,61,0.3) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 100%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        /* === HEADER === */
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(63,185,80,0.1);
+            border: 1px solid rgba(63,185,80,0.2);
+            border-radius: 100px;
+            padding: 6px 18px;
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: clamp(36px, 6vw, 56px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 14px;
+        }
+        .header h1 .highlight {
+            background: linear-gradient(135deg, var(--accent), #7ee787);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            font-size: 17px;
+            color: var(--muted);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* === MAIN GRID === */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 860px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        /* === CARD === */
+        .card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .card-header i {
+            color: var(--accent);
+            font-size: 16px;
+        }
+        .card-body {
+            padding: 22px;
+        }
+
+        /* === FORM === */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--fg);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(63,185,80,0.15);
+        }
+        .form-input::-webkit-calendar-picker-indicator {
+            filter: invert(0.7);
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237d8590' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .range-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: rgba(63,185,80,0.06);
+            border: 1px solid rgba(63,185,80,0.15);
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .range-display .count {
+            font-size: 22px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* === PATTERN SELECTOR === */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .pattern-btn {
+            padding: 10px 6px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.3;
+        }
+        .pattern-btn:hover {
+            border-color: var(--accent3);
+            color: var(--fg);
+        }
+        .pattern-btn.active {
+            background: rgba(63,185,80,0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .pattern-btn .pattern-icon {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        /* === CHECKBOX TOGGLE === */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .toggle-row span {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            cursor: pointer;
+        }
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border);
+            border-radius: 100px;
+            transition: background 0.3s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            top: 3px;
+            background: var(--fg);
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .toggle input:checked + .toggle-slider {
+            background: var(--accent);
+        }
+        .toggle input:checked + .toggle-slider::before {
+            transform: translateX(18px);
+        }
+
+        /* === GENERATE BUTTON === */
+        .btn-generate {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-generate::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        .btn-generate:hover::before {
+            transform: translateX(100%);
+        }
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(63,185,80,0.3);
+        }
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        /* === CONTRIBUTION MAP === */
+        .contrib-section {
+            margin-bottom: 24px;
+        }
+        .contrib-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .contrib-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .contrib-legend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .contrib-legend .sq {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        .sq-0 { background: var(--bg3); }
+        .sq-1 { background: var(--accent4); }
+        .sq-2 { background: var(--accent3); }
+        .sq-3 { background: var(--accent2); }
+        .sq-4 { background: var(--accent); }
+
+        .contrib-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 1fr);
+            grid-auto-flow: column;
+            grid-auto-columns: 1fr;
+            gap: 3px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+        .contrib-grid::-webkit-scrollbar {
+            height: 4px;
+        }
+        .contrib-grid::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        .contrib-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            background: var(--bg3);
+            min-width: 12px;
+            transition: all 0.15s;
+            cursor: default;
+            position: relative;
+        }
+        .contrib-cell:hover {
+            outline: 2px solid var(--accent);
+            outline-offset: 1px;
+            z-index: 2;
+        }
+        .contrib-cell.l1 { background: var(--accent4); }
+        .contrib-cell.l2 { background: var(--accent3); }
+        .contrib-cell.l3 { background: var(--accent2); }
+        .contrib-cell.l4 { background: var(--accent); }
+
+        .tooltip {
+            position: fixed;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+        }
+        .tooltip.visible { opacity: 1; }
+
+        /* === STATS BAR === */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* === CODE OUTPUT === */
+        .code-wrapper {
+            position: relative;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--bg3);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .code-lang {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .code-lang i { color: var(--accent); }
+
+        /* Mode toggle */
+        .mode-toggle {
+            display: flex;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .mode-btn {
+            padding: 4px 12px;
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .mode-btn.active {
+            background: rgba(63,185,80,0.15);
+            color: var(--accent);
+        }
+        .mode-btn:hover:not(.active) {
+            color: var(--fg);
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .code-btn {
+            padding: 5px 12px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--muted);
+            font-size: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .code-btn:hover {
+            color: var(--fg);
+            border-color: var(--accent3);
+        }
+        .code-btn.copied {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .code-block {
+            padding: 18px;
+            background: var(--bg);
+            overflow-x: auto;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+        .code-block::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .code-block::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            color: var(--fg);
+            white-space: pre;
+            margin: 0;
+        }
+        .code-block .cm { color: #7d8590; }
+        .code-block .ck { color: #ff7b72; }
+        .code-block .cs { color: #a5d6ff; }
+        .code-block .cv { color: #ffa657; }
+        .code-block .cf { color: #d2a8ff; }
+        .code-block .cn { color: #79c0ff; }
+
+        /* Raw textarea */
+        .raw-textarea {
+            width: 100%;
+            min-height: 200px;
+            max-height: 480px;
+            background: var(--bg);
+            border: none;
+            color: var(--fg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            padding: 18px;
+            resize: vertical;
+            outline: none;
+            display: none;
+        }
+
+        /* === EMPTY STATE === */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* === TOAST === */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 13px;
+            color: var(--fg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            animation: toastIn 0.3s ease;
+            min-width: 240px;
+        }
+        .toast.success i { color: var(--accent); }
+        .toast.error i { color: var(--danger); }
+        .toast.info i { color: var(--info); }
+        .toast.out { animation: toastOut 0.3s ease forwards; }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(40px); }
+        }
+
+        .day-labels {
+            display: grid;
+            grid-template-rows: repeat(7, 1fr);
+            gap: 3px;
+            margin-right: 4px;
+        }
+        .day-label {
+            font-size: 10px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 12px;
+        }
+        .contrib-wrapper {
+            display: flex;
+        }
+
+        .month-labels {
+            display: flex;
+            gap: 0;
+            margin-bottom: 6px;
+            padding-left: 32px;
+            overflow-x: auto;
+        }
+        .month-labels::-webkit-scrollbar { display: none; }
+        .month-label {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+        }
+
+        .steps {
+            margin-top: 16px;
+        }
+        .step {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(48,54,61,0.4);
+        }
+        .step:last-child { border-bottom: none; }
+        .step-num {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            background: rgba(63,185,80,0.1);
+            border: 1px solid rgba(63,185,80,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .step-text {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+        .step-text code {
+            background: var(--bg);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+
+        /* Warning banner */
+        .warning-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(210,153,34,0.08);
+            border: 1px solid rgba(210,153,34,0.2);
+            border-radius: 10px;
+            margin-bottom: 14px;
+            font-size: 12px;
+            color: var(--warning);
+            line-height: 1.5;
+        }
+        .warning-banner i {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 860px) {
+            .container { padding: 24px 16px 60px; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .code-header { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 480px) {
+            .pattern-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeUp 0.5s ease both;
+        }
+        .animate-in:nth-child(2) { animation-delay: 0.08s; }
+        .animate-in:nth-child(3) { animation-delay: 0.16s; }
+
+        /* Hidden textarea for clipboard fallback */
+        .hidden-clipboard {
+            position: fixed;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+<div class="bg-grid"></div>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="toast-container" id="toastContainer"></div>
+<!-- Hidden textarea untuk fallback copy -->
+<textarea class="hidden-clipboard" id="hiddenClipboard" aria-hidden="true"></textarea>
+
+<div class="container">
+    <header class="header animate-in">
+        <div class="header-badge">
+            <i class="fa-brands fa-git-alt"></i>
+            Git Auto Commit Script Generator
+        </div>
+        <h1>Generate <span class="highlight">Commit History</span><br>Otomatis</h1>
+        <p>Pilih rentang tanggal, pola, dan file perubahan — lalu generate skrip Bash yang siap dijalankan di repo Git kamu.</p>
+    </header>
+
+    <div class="main-grid">
+        <!-- Panel Kiri: Konfigurasi -->
+        <div class="card animate-in" style="position: sticky; top: 24px;">
+            <div class="card-header">
+                <i class="fa-solid fa-sliders"></i>
+                Konfigurasi
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">Rentang Tanggal</label>
+                    <div class="form-row">
+                        <input type="date" class="form-input" id="startDate">
+                        <input type="date" class="form-input" id="endDate">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Pola Commit</label>
+                    <div class="pattern-grid">
+                        <button class="pattern-btn active" data-pattern="random" onclick="selectPattern(this)">
+                            <span class="pattern-icon"><i class="fa-solid fa-dice"></i></span>
+                            Random
+                        </button>
+                        <button class="pattern-btn" data-pattern="consistent" onclick="selectPattern(this)">
+                            <span class="pattern-icon"><i class="fa-solid fa-equals"></i></span>
+                            Konsisten
+                        </button>
+                        <button class="pattern-btn" data-pattern="weekday" onclick="selectPattern(this)">
+                            <span class="pattern-icon"><i class="fa-solid fa-briefcase"></i></span>
+                            Weekday
+                        </button>
+                        <button class="pattern-btn" data-pattern="spike" onclick="selectPattern(this)">
+                            <span class="pattern-icon"><i class="fa-solid fa-chart-line"></i></span>
+                            Spike
+                        </button>
+                        <button class="pattern-btn" data-pattern="decay" onclick="selectPattern(this)">
+                            <span class="pattern-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
+                            Decay
+                        </button>
+                        <button class="pattern-btn" data-pattern="weekend" onclick="selectPattern(this)">
+                            <span class="pattern-icon"><i class="fa-solid fa-couch"></i></span>
+                            Weekend
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Commit per Hari (maks)</label>
+                    <input type="range" class="form-input" id="maxCommits" min="1" max="15" value="4"
+                        style="padding: 0; height: 6px; accent-color: var(--accent); cursor: pointer;"
+                        oninput="document.getElementById('maxCommitsVal').textContent = this.value; generatePreview();">
+                    <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:4px;">
+                        <span>1</span>
+                        <span style="color:var(--accent); font-weight:700; font-family:'JetBrains Mono',monospace;" id="maxCommitsVal">4</span>
+                        <span>15</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Jenis Perubahan File</label>
+                    <select class="form-input" id="fileType">
+                        <option value="readme">Update README.md</option>
+                        <option value="code">Edit file kode (.js/.py)</option>
+                        <option value="config">Ubah konfigurasi (.json/.yml)</option>
+                        <option value="docs">Update dokumentasi (.md)</option>
+                        <option value="mixed">Campuran acak</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="toggle-row">
+                        <span>Hari ini tidak di-commit</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="skipToday" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-row">
+                        <span>Push otomatis di akhir</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="autoPush" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="range-display">
+                        <span>Total Hari</span>
+                        <span class="count" id="totalDays">0</span>
+                    </div>
+                </div>
+
+                <button class="btn-generate" onclick="generateScript()">
+                    <i class="fa-solid fa-terminal"></i>
+                    Generate Skrip Bash
+                </button>
+
+                <div class="steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <span class="step-text">Buka terminal di folder repo Git kamu</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <span class="step-text">Klik <strong style="color:var(--fg)">Download .sh</strong> atau <strong style="color:var(--fg)">Copy</strong> di panel output</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <span class="step-text">Jalankan <code>bash commit.sh</code></span>
+                    </div>
+                    <div class="step">
+                        <span class="step-num"><i class="fa-solid fa-triangle-exclamation" style="font-size:9px;color:var(--warning)"></i></span>
+                        <span class="step-text" style="color:var(--warning)">Jangan copy manual dari tampilan berwarna — gunakan tombol saja</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Kanan: Output -->
+        <div>
+            <div class="stats-bar animate-in" id="statsBar" style="display:none;">
+                <div class="stat-item">
+                    <div class="stat-value" id="statDays">0</div>
+                    <div class="stat-label">Hari Aktif</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statCommits">0</div>
+                    <div class="stat-label">Total Commit</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statFiles">0</div>
+                    <div class="stat-label">File Diubah</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statAvg">0</div>
+                    <div class="stat-label">Rata-rata/Hari</div>
+                </div>
+            </div>
+
+            <div class="card animate-in" style="margin-bottom:24px;">
+                <div class="card-header">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    Preview Kontribusi
+                </div>
+                <div class="card-body contrib-section">
+                    <div class="contrib-header">
+                        <span class="contrib-title" id="contribRange">-</span>
+                        <div class="contrib-legend">
+                            <span>Sedikit</span>
+                            <span class="sq sq-0"></span>
+                            <span class="sq sq-1"></span>
+                            <span class="sq sq-2"></span>
+                            <span class="sq sq-3"></span>
+                            <span class="sq sq-4"></span>
+                            <span>Banyak</span>
+                        </div>
+                    </div>
+                    <div class="month-labels" id="monthLabels"></div>
+                    <div class="contrib-wrapper">
+                        <div class="day-labels">
+                            <div class="day-label"></div>
+                            <div class="day-label"></div>
+                            <div class="day-label" style="font-size:9px;">Sen</div>
+                            <div class="day-label"></div>
+                            <div class="day-label" style="font-size:9px;">Rab</div>
+                            <div class="day-label"></div>
+                            <div class="day-label" style="font-size:9px;">Jum</div>
+                        </div>
+                        <div class="contrib-grid" id="contribGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card animate-in" id="codeCard">
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <div class="code-header-left">
+                            <span class="code-lang">
+                                <i class="fa-solid fa-file-code"></i>
+                                bash
+                            </span>
+                            <!-- Mode toggle: Highlighted / Raw -->
+                            <div class="mode-toggle" id="modeToggle" style="display:none;">
+                                <button class="mode-btn active" data-mode="highlighted" onclick="switchMode('highlighted')">
+                                    <i class="fa-solid fa-palette"></i> Warna
+                                </button>
+                                <button class="mode-btn" data-mode="raw" onclick="switchMode('raw')">
+                                    <i class="fa-solid fa-file-lines"></i> Raw
+                                </button>
+                            </div>
+                        </div>
+                        <div class="code-actions">
+                            <button class="code-btn" id="btnDownload" onclick="downloadScript()" style="display:none;">
+                                <i class="fa-solid fa-download"></i> Download .sh
+                            </button>
+                            <button class="code-btn" id="btnCopy" onclick="copyScript()" style="display:none;">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="code-block" id="codeBlock">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-code"></i>
+                            <p>Atur konfigurasi di sebelah kiri, lalu klik "Generate Skrip Bash"</p>
+                        </div>
+                    </div>
+                    <!-- Raw textarea (tersembunyi, hanya muncul saat mode raw) -->
+                    <textarea class="raw-textarea" id="rawTextarea" readonly spellcheck="false"></textarea>
+                </div>
+                <!-- Warning banner (muncul setelah generate) -->
+                <div id="warningBanner" style="display:none; padding: 0 22px 18px;">
+                    <div class="warning-banner">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span><strong>Jangan copy manual</strong> dari tampilan berwarna di atas — teks tersebut mengandung tag HTML tersembunyi. Gunakan tombol <strong>Copy</strong> atau <strong>Download .sh</strong> saja untuk mendapatkan skrip Bash murni yang bisa langsung dijalankan.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // === STATE ===
+    let currentPattern = 'random';
+    let commitMap = {};
+    // generatedScript SELALU berisi teks murni, tanpa HTML sama sekali
+    let generatedScript = '';
+    let currentViewMode = 'highlighted';
+    const MONTHS_ID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+    // === INISIALISASI TANGGAL ===
+    function initDates() {
+        const today = new Date();
+        const sixMonthsAgo = new Date(today);
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+        document.getElementById('startDate').value = formatDate(sixMonthsAgo);
+        document.getElementById('endDate').value = formatDate(today);
+        document.getElementById('endDate').max = formatDate(today);
+
+        generatePreview();
+    }
+
+    function formatDate(d) {
+        return d.toISOString().split('T')[0];
+    }
+
+    // === EVENT LISTENERS ===
+    document.getElementById('startDate').addEventListener('change', generatePreview);
+    document.getElementById('endDate').addEventListener('change', generatePreview);
+    document.getElementById('fileType').addEventListener('change', generatePreview);
+    document.getElementById('skipToday').addEventListener('change', generatePreview);
+
+    // === PATTERN SELECTOR ===
+    function selectPattern(btn) {
+        document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPattern = btn.dataset.pattern;
+        generatePreview();
+    }
+
+    // === MODE TOGGLE (Highlighted / Raw) ===
+    function switchMode(mode) {
+        currentViewMode = mode;
+        const codeBlock = document.getElementById('codeBlock');
+        const rawTextarea = document.getElementById('rawTextarea');
+
+        document.querySelectorAll('.mode-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.mode === mode);
+        });
+
+        if (mode === 'raw') {
+            codeBlock.style.display = 'none';
+            rawTextarea.style.display = 'block';
+            rawTextarea.value = generatedScript;
+        } else {
+            codeBlock.style.display = 'block';
+            rawTextarea.style.display = 'none';
+        }
+    }
+
+    // === HITUNG JUMLAH HARI ===
+    function getDaysArray() {
+        const start = new Date(document.getElementById('startDate').value + 'T00:00:00');
+        const end = new Date(document.getElementById('endDate').value + 'T00:00:00');
+        const days = [];
+        const current = new Date(start);
+        while (current <= end) {
+            days.push(new Date(current));
+            current.setDate(current.getDate() + 1);
+        }
+        return days;
+    }
+
+    // === GENERATE COMMIT MAP ===
+    function generateCommitMap() {
+        const days = getDaysArray();
+        const maxPerDay = parseInt(document.getElementById('maxCommits').value);
+        const skipToday = document.getElementById('skipToday').checked;
+        const todayStr = formatDate(new Date());
+        commitMap = {};
+
+        // Seed pseudo-random agar konsisten saat preview vs generate
+        const startVal = document.getElementById('startDate').value;
+        let seed = hashCode(startVal + currentPattern + maxPerDay);
+
+        function seededRandom() {
+            seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
+            return (seed >>> 0) / 0xFFFFFFFF;
+        }
+
+        days.forEach((d, i) => {
+            const dateStr = formatDate(d);
+            const dow = d.getDay();
+            const isWeekend = dow === 0 || dow === 6;
+            const progress = days.length > 1 ? i / (days.length - 1) : 0.5;
+
+            if (skipToday && dateStr === todayStr) return;
+
+            let count = 0;
+
+            switch (currentPattern) {
+                case 'random':
+                    count = seededRandom() < 0.7 ? Math.floor(seededRandom() * maxPerDay) + 1 : 0;
+                    break;
+                case 'consistent':
+                    count = Math.floor(seededRandom() * 2) + Math.ceil(maxPerDay * 0.6);
+                    break;
+                case 'weekday':
+                    count = !isWeekend ? Math.floor(seededRandom() * maxPerDay) + 1 : (seededRandom() < 0.15 ? 1 : 0);
+                    break;
+                case 'spike': {
+                    const center = 0.5;
+                    const dist = Math.abs(progress - center);
+                    const factor = Math.max(0, 1 - dist * 2.5);
+                    count = seededRandom() < factor ? Math.ceil(maxPerDay * factor) : 0;
+                    break;
+                }
+                case 'decay': {
+                    const factor = 1 - progress * 0.8;
+                    count = seededRandom() < factor ? Math.ceil(maxPerDay * factor) : 0;
+                    break;
+                }
+                case 'weekend':
+                    count = isWeekend ? Math.floor(seededRandom() * maxPerDay) + 1 : (seededRandom() < 0.2 ? 1 : 0);
+                    break;
+            }
+
+            commitMap[dateStr] = Math.max(0, count);
+        });
+
+        return commitMap;
+    }
+
+    // === RENDER CONTRIBUTION MAP ===
+    function renderContribMap() {
+        const grid = document.getElementById('contribGrid');
+        const monthLabelsEl = document.getElementById('monthLabels');
+        grid.innerHTML = '';
+        monthLabelsEl.innerHTML = '';
+
+        if (Object.keys(commitMap).length === 0) {
+            document.getElementById('contribRange').textContent = '-';
+            return;
+        }
+
+        const keys = Object.keys(commitMap).sort();
+        const startDate = new Date(keys[0] + 'T00:00:00');
+        const endDate = new Date(keys[keys.length - 1] + 'T00:00:00');
+
+        document.getElementById('contribRange').textContent =
+            `${startDate.getDate()} ${MONTHS_ID[startDate.getMonth()]} ${startDate.getFullYear()} — ${endDate.getDate()} ${MONTHS_ID[endDate.getMonth()]} ${endDate.getFullYear()}`;
+
+        const firstDow = startDate.getDay();
+
+        for (let i = 0; i < firstDow; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'contrib-cell';
+            cell.style.opacity = '0';
+            grid.appendChild(cell);
+        }
+
+        let lastMonth = -1;
+        let weekIndex = 0;
+        let seenMonday = false;
+
+        const current = new Date(startDate);
+        while (current <= endDate) {
+            const dateStr = formatDate(current);
+            const count = commitMap[dateStr] || 0;
+            const dow = current.getDay();
+
+            if (dow === 1) {
+                if (seenMonday) weekIndex++;
+                seenMonday = true;
+            }
+
+            const month = current.getMonth();
+            if (month !== lastMonth && (dow === 1 || current.getTime() === startDate.getTime())) {
+                lastMonth = month;
+                const label = document.createElement('span');
+                label.className = 'month-label';
+                label.textContent = MONTHS_ID[month];
+                label.style.minWidth = (weekIndex * 15) + 'px';
+                monthLabelsEl.appendChild(label);
+            }
+
+            const cell = document.createElement('div');
+            cell.className = 'contrib-cell';
+
+            if (count === 0) { /* bg default */ }
+            else if (count <= 2) cell.classList.add('l1');
+            else if (count <= 5) cell.classList.add('l2');
+            else if (count <= 9) cell.classList.add('l3');
+            else cell.classList.add('l4');
+
+            cell.dataset.date = dateStr;
+            cell.dataset.count = count;
+            cell.addEventListener('mouseenter', showTooltip);
+            cell.addEventListener('mouseleave', hideTooltip);
+
+            grid.appendChild(cell);
+            current.setDate(current.getDate() + 1);
+        }
+    }
+
+    function showTooltip(e) {
+        const tip = document.getElementById('tooltip');
+        const d = new Date(e.target.dataset.date + 'T00:00:00');
+        const count = e.target.dataset.count;
+        const dayName = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][d.getDay()];
+        tip.innerHTML = `<strong>${count}</strong> commit — ${dayName}, ${d.getDate()} ${MONTHS_ID[d.getMonth()]} ${d.getFullYear()}`;
+        tip.classList.add('visible');
+        positionTooltip(e);
+    }
+
+    function positionTooltip(e) {
+        const tip = document.getElementById('tooltip');
+        const rect = e.target.getBoundingClientRect();
+        tip.style.left = rect.left + rect.width / 2 - tip.offsetWidth / 2 + 'px';
+        tip.style.top = rect.top - tip.offsetHeight - 8 + 'px';
+    }
+
+    function hideTooltip() {
+        document.getElementById('tooltip').classList.remove('visible');
+    }
+
+    // === RENDER STATS ===
+    function renderStats() {
+        const values = Object.values(commitMap);
+        const activeDays = values.filter(v => v > 0).length;
+        const totalCommits = values.reduce((a, b) => a + b, 0);
+        const avg = activeDays > 0 ? (totalCommits / activeDays).toFixed(1) : 0;
+
+        document.getElementById('statDays').textContent = activeDays;
+        document.getElementById('statCommits').textContent = totalCommits;
+        document.getElementById('statFiles').textContent = totalCommits;
+        document.getElementById('statAvg').textContent = avg;
+        document.getElementById('statsBar').style.display = activeDays > 0 ? 'grid' : 'none';
+    }
+
+    // === GENERATE PREVIEW ===
+    function generatePreview() {
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+
+        if (!start || !end) return;
+
+        const days = getDaysArray();
+        document.getElementById('totalDays').textContent = days.length;
+
+        generateCommitMap();
+        renderContribMap();
+        renderStats();
+    }
+
+    // === DATA COMMIT MESSAGES ===
+    function getCommitMessages(fileType) {
+        const messages = {
+            readme: [
+                'Update README documentation',
+                'Perbaiki typo di README',
+                'Tambahkan deskripsi fitur baru',
+                'Update installation guide',
+                'Perbarui badge dan link README',
+                'Tambahkan section FAQ',
+                'Update contoh penggunaan',
+                'Perbaiki format markdown',
+                'Tambahkan screenshot ke README',
+                'Update daftar kontributor',
+                'Revisi deskripsi proyek',
+                'Perbarui tabel fitur',
+            ],
+            code: [
+                'Refactor fungsi utama',
+                'Perbaiki bug pada validasi input',
+                'Optimasi performa query',
+                'Tambahkan error handling',
+                'Implementasi fitur baru',
+                'Perbaiki memory leak',
+                'Update dependency versions',
+                'Tambahkan unit test baru',
+                'Refactor module structure',
+                'Perbaiki edge case',
+                'Optimasi algoritma sorting',
+                'Tambahkan logging',
+                'Perbaiki race condition',
+                'Update type definitions',
+                'Simplify complex logic',
+            ],
+            config: [
+                'Update konfigurasi CI/CD',
+                'Tambahkan environment variable',
+                'Update .gitignore',
+                'Perbaiki konfigurasi linting',
+                'Update docker config',
+                'Tambahkan script baru ke package.json',
+                'Update webpack config',
+                'Perbaiki tsconfig paths',
+                'Update .env example',
+                'Tambahkan pre-commit hook',
+            ],
+            docs: [
+                'Update dokumentasi API',
+                'Perbaiki contoh kode di docs',
+                'Tambahkan panduan deployment',
+                'Update changelog',
+                'Perbaiki link broken di docs',
+                'Tambahkan arsitektur diagram',
+                'Update migration guide',
+                'Perbaiki format tabel docs',
+            ],
+            mixed: []
+        };
+
+        if (fileType === 'mixed') {
+            return [...messages.readme, ...messages.code, ...messages.config, ...messages.docs];
+        }
+        return messages[fileType] || messages.code;
+    }
+
+    // === FILE CHANGE GENERATOR ===
+    function getFileChange(fileType, date) {
+        const dateNum = Math.abs(hashCode(date));
+        const changes = {
+            readme: [
+                { file: 'README.md', change: 'echo "  - Updated ' + date + '" >> README.md' },
+                { file: 'README.md', change: 'sed -i \'1i<!-- Updated: ' + date + ' -->\' README.md' },
+            ],
+            code: [
+                { file: 'src/index.js', change: 'echo "// Fix: ' + date + '" >> src/index.js' },
+                { file: 'src/utils.py', change: 'echo "# Optimized: ' + date + '" >> src/utils.py' },
+                { file: 'src/app.js', change: 'echo "/* Refactor: ' + date + ' */" >> src/app.js' },
+            ],
+            config: [
+                { file: 'package.json', change: 'echo \'{"updated":"\'"' + date + '""\'"}\' >> package.json.tmp && mv package.json.tmp package.json' },
+                { file: '.env.example', change: 'echo "# Changed ' + date + '" >> .env.example' },
+            ],
+            docs: [
+                { file: 'docs/API.md', change: 'echo "## Changes ' + date + '" >> docs/API.md' },
+                { file: 'CHANGELOG.md', change: 'echo "- ' + date + ': Updated" >> CHANGELOG.md' },
+            ],
+            mixed: [],
+        };
+
+        if (fileType === 'mixed') {
+            const all = [changes.readme, changes.code, changes.config, changes.docs].flat();
+            return all[dateNum % all.length];
+        }
+        const list = changes[fileType] || changes.code;
+        return list[dateNum % list.length];
+    }
+
+    function hashCode(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash |= 0;
+        }
+        return hash;
+    }
+
+    // === GENERATE SKRIP BASH (TEKS MURNI) ===
+    function generateScript() {
+        const startVal = document.getElementById('startDate').value;
+        const endVal = document.getElementById('endDate').value;
+        const fileType = document.getElementById('fileType').value;
+        const autoPush = document.getElementById('autoPush').checked;
+
+        if (!startVal || !endVal) {
+            showToast('Pilih rentang tanggal terlebih dahulu', 'error');
+            return;
+        }
+        if (new Date(startVal) > new Date(endVal)) {
+            showToast('Tanggal mulai tidak boleh lebih besar dari tanggal selesai', 'error');
+            return;
+        }
+
+        // Regenerasi commit map (deterministik)
+        generateCommitMap();
+
+        const sortedDates = Object.keys(commitMap).filter(d => commitMap[d] > 0).sort();
+        if (sortedDates.length === 0) {
+            showToast('Tidak ada hari yang akan di-commit dengan konfigurasi ini', 'error');
+            return;
+        }
+
+        const messages = getCommitMessages(fileType);
+        const lines = [];
+
+        // Header — teks murni, bukan HTML
+        lines.push('#!/bin/bash');
+        lines.push('');
+        lines.push('# ============================================');
+        lines.push('# Git Auto Commit Script');
+        lines.push('# Generated: ' + new Date().toLocaleString('id-ID'));
+        lines.push('# Range: ' + startVal + ' s/d ' + endVal);
+        lines.push('# Total: ' + sortedDates.length + ' hari, ' + Object.values(commitMap).reduce(function(a,b){return a+b},0) + ' commits');
+        lines.push('# ============================================');
+        lines.push('');
+        lines.push('set -e');
+        lines.push('');
+        lines.push('# Cek apakah di dalam repo Git');
+        lines.push('if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then');
+        lines.push('    echo "ERROR: Bukan folder repo Git. Jalankan git init terlebih dahulu."');
+        lines.push('    exit 1');
+        lines.push('fi');
+        lines.push('');
+
+        // Inisialisasi file jika belum ada
+        lines.push('# Pastikan file target ada');
+        const targetFiles = getTargetFiles(fileType);
+        for (let f = 0; f < targetFiles.length; f++) {
+            lines.push('[ ! -f "' + targetFiles[f] + '" ] && echo "# ' + targetFiles[f] + '" > "' + targetFiles[f] + '"');
+        }
+        lines.push('');
+
+        // Konfigurasi git
+        lines.push('# Set nama & email (ubah sesuai akun Git kamu)');
+        lines.push('GIT_AUTHOR_NAME="${GIT_AUTHOR_NAME:-Your Name}"');
+        lines.push('GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL:-you@example.com}"');
+        lines.push('GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME:-$GIT_AUTHOR_NAME}"');
+        lines.push('GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-$GIT_AUTHOR_EMAIL}"');
+        lines.push('export GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL GIT_COMMITTER_NAME GIT_COMMITTER_EMAIL');
+        lines.push('');
+
+        const totalCommits = sortedDates.reduce(function(sum, d) { return sum + commitMap[d]; }, 0);
+        lines.push('TOTAL_COMMITS=' + totalCommits);
+        lines.push('CURRENT=0');
+        lines.push('');
+        lines.push('echo ""');
+        lines.push('echo "=========================================="');
+        lines.push('echo " Mulai auto-commit..."');
+        lines.push('echo " Total: $TOTAL_COMMITS commits"');
+        lines.push('echo "=========================================="');
+        lines.push('echo ""');
+        lines.push('');
+
+        // Commit per tanggal
+        let msgIndex = 0;
+        for (let di = 0; di < sortedDates.length; di++) {
+            const dateStr = sortedDates[di];
+            const count = commitMap[dateStr];
+            const d = new Date(dateStr + 'T00:00:00');
+            const dayName = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][d.getDay()];
+
+            lines.push('# --- ' + dateStr + ' (' + dayName + ') ---');
+            lines.push('echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk ' + dateStr + '..."');
+
+            for (let i = 0; i < count; i++) {
+                const msg = messages[msgIndex % messages.length];
+                const fileChange = getFileChange(fileType, dateStr + '-' + i);
+
+                // Waktu acak antara jam 08:00 - 20:00
+                const hour = String(8 + Math.floor(Math.abs(hashCode(dateStr + '-' + i + 'h')) % 13)).padStart(2, '0');
+                const minute = String(Math.abs(hashCode(dateStr + '-' + i + 'm')) % 60).padStart(2, '0');
+                const second = String(Math.abs(hashCode(dateStr + '-' + i + 's')) % 60).padStart(2, '0');
+                const timestamp = dateStr + 'T' + hour + ':' + minute + ':' + second;
+
+                lines.push('');
+                lines.push('# Commit ' + (i + 1) + ' dari ' + count);
+                lines.push('GIT_AUTHOR_DATE="' + timestamp + '"');
+                lines.push('GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"');
+                lines.push('export GIT_AUTHOR_DATE GIT_COMMITTER_DATE');
+                lines.push(fileChange.change);
+                lines.push('git add ' + fileChange.file);
+                lines.push('git commit -m "' + msg + '" > /dev/null 2>&1 || true');
+                lines.push('CURRENT=$((CURRENT+1))');
+
+                msgIndex++;
+            }
+
+            lines.push('');
+            lines.push('unset GIT_AUTHOR_DATE');
+            lines.push('unset GIT_COMMITTER_DATE');
+            lines.push('');
+        }
+
+        // Push
+        if (autoPush) {
+            lines.push('# Push ke remote');
+            lines.push('echo ""');
+            lines.push('echo "Push ke remote..."');
+            lines.push('BRANCH=$(git branch --show-current 2>/dev/null)');
+            lines.push('if [ -z "$BRANCH" ]; then');
+            lines.push('    BRANCH="main"');
+            lines.push('fi');
+            lines.push('git push origin "$BRANCH" 2>/dev/null || echo "WARNING: Gagal push. Push manual: git push origin $BRANCH"');
+            lines.push('');
+        }
+
+        // Footer
+        lines.push('echo ""');
+        lines.push('echo "=========================================="');
+        lines.push('echo " Selesai! $CURRENT commits berhasil dibuat."');
+        lines.push('echo "=========================================="');
+        lines.push('echo ""');
+
+        // SIMPAN TEKS MURNI — tidak ada HTML sama sekali
+        generatedScript = lines.join('\n');
+
+        // Render syntax-highlighted version (hanya untuk tampilan)
+        renderHighlightedCode(generatedScript);
+
+        // Isi juga raw textarea
+        document.getElementById('rawTextarea').value = generatedScript;
+
+        // Tampilkan tombol & mode toggle & warning
+        document.getElementById('btnCopy').style.display = 'flex';
+        document.getElementById('btnDownload').style.display = 'flex';
+        document.getElementById('modeToggle').style.display = 'flex';
+        document.getElementById('warningBanner').style.display = 'block';
+
+        // Pastikan kembali ke mode highlighted
+        switchMode('highlighted');
+
+        showToast('Skrip berhasil di-generate: ' + totalCommits + ' commits untuk ' + sortedDates.length + ' hari', 'success');
+    }
+
+    function getTargetFiles(fileType) {
+        switch (fileType) {
+            case 'readme': return ['README.md'];
+            case 'code': return ['src/index.js', 'src/utils.py', 'src/app.js'];
+            case 'config': return ['package.json', '.env.example'];
+            case 'docs': return ['docs/API.md', 'CHANGELOG.md'];
+            case 'mixed': return ['README.md', 'src/index.js', 'package.json', 'CHANGELOG.md'];
+            default: return ['README.md'];
+        }
+    }
+
+    // === SYNTAX HIGHLIGHTING (HANYA UNTUK TAMPILAN, BUKAN UNTUK COPY/DOWNLOAD) ===
+    function renderHighlightedCode(code) {
+        const block = document.getElementById('codeBlock');
+        let html = escapeHtml(code);
+
+        // Komentar (# di awal baris, atau setelah spasi di awal)
+        html = html.replace(/^(#[^\n]*)/gm, '<span class="cm">$1</span>');
+
+        // Strings dalam double quote (hati-hati jangan kena span tag)
+        html = html.replace(/"([^"<]*)"/g, '<span class="cs">"$1"</span>');
+
+        // Keywords bash
+        var keywords = ['if','then','fi','else','for','do','done','set','exit','echo','export','unset','true','return'];
+        for (var k = 0; k < keywords.length; k++) {
+            var kw = keywords[k];
+            var re = new RegExp('\\b(' + kw + ')\\b', 'g');
+            html = html.replace(re, function(match, g1, offset, str) {
+                // Jangan replace jika sudah di dalam span
+                var before = str.substring(Math.max(0, offset - 20), offset);
+                if (before.indexOf('<span') !== -1 && before.indexOf('</span>') === -1) return match;
+                return '<span class="ck">' + g1 + '</span>';
+            });
+        }
+
+        // Variabel $VAR dan ${VAR}
+        html = html.replace(/\$([A-Z_][A-Z0-9_]*)/g, function(match, g1, offset, str) {
+            var before = str.substring(Math.max(0, offset - 20), offset);
+            if (before.indexOf('<span') !== -1 && before.indexOf('</span>') === -1) return match;
+            return '<span class="cv">$' + g1 + '</span>';
+        });
+
+        // Angka
+        html = html.replace(/\b(\d+)\b/g, function(match, g1, offset, str) {
+            var before = str.substring(Math.max(0, offset - 20), offset);
+            if (before.indexOf('<span') !== -1 && before.indexOf('</span>') === -1) return match;
+            return '<span class="cn">' + g1 + '</span>';
+        });
+
+        block.innerHTML = '<pre>' + html + '</pre>';
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // === COPY SCRIPT — SELALU DARI TEKS MURNI ===
+    function copyScript() {
+        if (!generatedScript) return;
+
+        // Coba Clipboard API modern
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(generatedScript).then(function() {
+                onCopySuccess();
+            }).catch(function() {
+                // Fallback: gunakan hidden textarea
+                fallbackCopy(generatedScript);
+            });
+        } else {
+            // Fallback langsung
+            fallbackCopy(generatedScript);
+        }
+    }
+
+    function fallbackCopy(text) {
+        var ta = document.getElementById('hiddenClipboard');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '0';
+        ta.style.top = '0';
+        ta.style.opacity = '0.01';
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        try {
+            var ok = document.execCommand('copy');
+            if (ok) {
+                onCopySuccess();
+            } else {
+                showToast('Gagal copy. Coba gunakan mode Raw lalu select-all manual.', 'error');
+            }
+        } catch (e) {
+            showToast('Gagal copy. Coba gunakan mode Raw lalu select-all manual.', 'error');
+        }
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        ta.style.opacity = '0';
+    }
+
+    function onCopySuccess() {
+        var btn = document.getElementById('btnCopy');
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        showToast('Skrip BASH murni berhasil di-copy — langsung paste ke terminal', 'success');
+        setTimeout(function() {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        }, 2500);
+    }
+
+    // === DOWNLOAD SCRIPT — SELALU DARI TEKS MURNI ===
+    function downloadScript() {
+        if (!generatedScript) return;
+
+        // Buat Blob dari teks murni, bukan innerHTML
+        var blob = new Blob([generatedScript], { type: 'text/x-shellscript;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'git-auto-commit.sh';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast('File git-auto-commit.sh berhasil di-download — jalankan: bash git-auto-commit.sh', 'success');
+    }
+
+    // === TOAST ===
+    function showToast(message, type) {
+        type = type || 'success';
+        var container = document.getElementById('toastContainer');
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        var iconClass = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info';
+        toast.innerHTML = '<i class="fa-solid ' + iconClass + '"></i>' + message;
+        container.appendChild(toast);
+
+        setTimeout(function() {
+            toast.classList.add('out');
+            setTimeout(function() { toast.remove(); }, 300);
+        }, 3500);
+    }
+
+    // === INIT ===
+    initDates();
+</script>
+
+</body>
+</html>
