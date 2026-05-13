@@ -2,9 +2,9 @@
 
 # ============================================
 # Git Auto Commit Script
-# Generated: 27/4/2026, 15.34.15
-# Range: 2026-04-22 s/d 2026-04-27
-# Total: 6 hari, 16 commits
+# Generated: 13/5/2026, 14.16.26
+# Range: 2026-05-08 s/d 2026-05-13
+# Total: 6 hari, 25 commits
 # ============================================
 
 set -e
@@ -25,7 +25,7 @@ GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME:-$GIT_AUTHOR_NAME}"
 GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL:-$GIT_AUTHOR_EMAIL}"
 export GIT_AUTHOR_NAME GIT_AUTHOR_EMAIL GIT_COMMITTER_NAME GIT_COMMITTER_EMAIL
 
-TOTAL_COMMITS=16
+TOTAL_COMMITS=25
 CURRENT=0
 
 echo ""
@@ -35,65 +35,59 @@ echo " Total: $TOTAL_COMMITS commits"
 echo "=========================================="
 echo ""
 
-# --- 2026-04-21 (Selasa) ---
-echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-04-21..."
+# --- 2026-05-07 (Kamis) ---
+echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-05-07..."
 
-# Commit 1 dari 3
-GIT_AUTHOR_DATE="2026-04-21T18:09:15"
+# Commit 1 dari 6
+GIT_AUTHOR_DATE="2026-05-07T11:14:20"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-21-0" >> README.md
+sed -i '1i<!-- Updated: 2026-05-07-0 -->' README.md
 git add README.md
 git commit -m "Update README documentation" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 2 dari 3
-GIT_AUTHOR_DATE="2026-04-21T10:40:46"
+# Commit 2 dari 6
+GIT_AUTHOR_DATE="2026-05-07T16:45:51"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-21-1 -->' README.md
+echo "  - Updated 2026-05-07-1" >> README.md
 git add README.md
 git commit -m "Perbaiki typo di README" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 3 dari 3
-GIT_AUTHOR_DATE="2026-04-21T15:11:17"
+# Commit 3 dari 6
+GIT_AUTHOR_DATE="2026-05-07T08:16:22"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-21-2" >> README.md
+sed -i '1i<!-- Updated: 2026-05-07-2 -->' README.md
 git add README.md
 git commit -m "Tambahkan deskripsi fitur baru" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-unset GIT_AUTHOR_DATE
-unset GIT_COMMITTER_DATE
-
-# --- 2026-04-22 (Rabu) ---
-echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-04-22..."
-
-# Commit 1 dari 3
-GIT_AUTHOR_DATE="2026-04-22T13:40:46"
+# Commit 4 dari 6
+GIT_AUTHOR_DATE="2026-05-07T13:47:53"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-22-0 -->' README.md
+echo "  - Updated 2026-05-07-3" >> README.md
 git add README.md
 git commit -m "Update installation guide" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 2 dari 3
-GIT_AUTHOR_DATE="2026-04-22T18:11:17"
+# Commit 5 dari 6
+GIT_AUTHOR_DATE="2026-05-07T18:18:24"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-22-1" >> README.md
+sed -i '1i<!-- Updated: 2026-05-07-4 -->' README.md
 git add README.md
 git commit -m "Perbarui badge dan link README" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 3 dari 3
-GIT_AUTHOR_DATE="2026-04-22T10:42:48"
+# Commit 6 dari 6
+GIT_AUTHOR_DATE="2026-05-07T10:49:55"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-22-2 -->' README.md
+echo "  - Updated 2026-05-07-5" >> README.md
 git add README.md
 git commit -m "Tambahkan section FAQ" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
@@ -101,56 +95,176 @@ CURRENT=$((CURRENT+1))
 unset GIT_AUTHOR_DATE
 unset GIT_COMMITTER_DATE
 
-# --- 2026-04-23 (Kamis) ---
-echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-04-23..."
+# --- 2026-05-08 (Jumat) ---
+echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-05-08..."
 
-# Commit 1 dari 2
-GIT_AUTHOR_DATE="2026-04-23T08:11:17"
+# Commit 1 dari 4
+GIT_AUTHOR_DATE="2026-05-08T19:45:51"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-23-0" >> README.md
+echo "  - Updated 2026-05-08-0" >> README.md
 git add README.md
 git commit -m "Update contoh penggunaan" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 2 dari 2
-GIT_AUTHOR_DATE="2026-04-23T13:42:48"
+# Commit 2 dari 4
+GIT_AUTHOR_DATE="2026-05-08T11:16:22"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-23-1 -->' README.md
+sed -i '1i<!-- Updated: 2026-05-08-1 -->' README.md
 git add README.md
 git commit -m "Perbaiki format markdown" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 3 dari 4
+GIT_AUTHOR_DATE="2026-05-08T16:47:53"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+echo "  - Updated 2026-05-08-2" >> README.md
+git add README.md
+git commit -m "Tambahkan screenshot ke README" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 4 dari 4
+GIT_AUTHOR_DATE="2026-05-08T08:18:24"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+sed -i '1i<!-- Updated: 2026-05-08-3 -->' README.md
+git add README.md
+git commit -m "Update daftar kontributor" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
 unset GIT_AUTHOR_DATE
 unset GIT_COMMITTER_DATE
 
-# --- 2026-04-24 (Jumat) ---
-echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-04-24..."
+# --- 2026-05-09 (Sabtu) ---
+echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-05-09..."
 
-# Commit 1 dari 3
-GIT_AUTHOR_DATE="2026-04-24T16:42:48"
+# Commit 1 dari 5
+GIT_AUTHOR_DATE="2026-05-09T14:16:22"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-24-0 -->' README.md
+sed -i '1i<!-- Updated: 2026-05-09-0 -->' README.md
+git add README.md
+git commit -m "Revisi deskripsi proyek" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 2 dari 5
+GIT_AUTHOR_DATE="2026-05-09T19:47:53"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+echo "  - Updated 2026-05-09-1" >> README.md
+git add README.md
+git commit -m "Perbarui tabel fitur" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 3 dari 5
+GIT_AUTHOR_DATE="2026-05-09T11:18:24"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+sed -i '1i<!-- Updated: 2026-05-09-2 -->' README.md
+git add README.md
+git commit -m "Update README documentation" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 4 dari 5
+GIT_AUTHOR_DATE="2026-05-09T16:49:55"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+echo "  - Updated 2026-05-09-3" >> README.md
+git add README.md
+git commit -m "Perbaiki typo di README" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 5 dari 5
+GIT_AUTHOR_DATE="2026-05-09T08:20:26"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+sed -i '1i<!-- Updated: 2026-05-09-4 -->' README.md
+git add README.md
+git commit -m "Tambahkan deskripsi fitur baru" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+unset GIT_AUTHOR_DATE
+unset GIT_COMMITTER_DATE
+
+# --- 2026-05-10 (Minggu) ---
+echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-05-10..."
+
+# Commit 1 dari 6
+GIT_AUTHOR_DATE="2026-05-10T08:38:44"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+sed -i '1i<!-- Updated: 2026-05-10-0 -->' README.md
+git add README.md
+git commit -m "Update installation guide" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 2 dari 6
+GIT_AUTHOR_DATE="2026-05-10T13:09:15"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+echo "  - Updated 2026-05-10-1" >> README.md
+git add README.md
+git commit -m "Perbarui badge dan link README" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 3 dari 6
+GIT_AUTHOR_DATE="2026-05-10T18:40:46"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+sed -i '1i<!-- Updated: 2026-05-10-2 -->' README.md
+git add README.md
+git commit -m "Tambahkan section FAQ" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 4 dari 6
+GIT_AUTHOR_DATE="2026-05-10T10:11:17"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+echo "  - Updated 2026-05-10-3" >> README.md
+git add README.md
+git commit -m "Update contoh penggunaan" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 5 dari 6
+GIT_AUTHOR_DATE="2026-05-10T15:42:48"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+sed -i '1i<!-- Updated: 2026-05-10-4 -->' README.md
+git add README.md
+git commit -m "Perbaiki format markdown" > /dev/null 2>&1 || true
+CURRENT=$((CURRENT+1))
+
+# Commit 6 dari 6
+GIT_AUTHOR_DATE="2026-05-10T20:13:19"
+GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
+echo "  - Updated 2026-05-10-5" >> README.md
 git add README.md
 git commit -m "Tambahkan screenshot ke README" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 2 dari 3
-GIT_AUTHOR_DATE="2026-04-24T08:13:19"
+unset GIT_AUTHOR_DATE
+unset GIT_COMMITTER_DATE
+
+# --- 2026-05-11 (Senin) ---
+echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-05-11..."
+
+# Commit 1 dari 2
+GIT_AUTHOR_DATE="2026-05-11T16:09:15"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-24-1" >> README.md
+echo "  - Updated 2026-05-11-0" >> README.md
 git add README.md
 git commit -m "Update daftar kontributor" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 3 dari 3
-GIT_AUTHOR_DATE="2026-04-24T13:44:50"
+# Commit 2 dari 2
+GIT_AUTHOR_DATE="2026-05-11T08:40:46"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-24-2 -->' README.md
+sed -i '1i<!-- Updated: 2026-05-11-1 -->' README.md
 git add README.md
 git commit -m "Revisi deskripsi proyek" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
@@ -158,58 +272,25 @@ CURRENT=$((CURRENT+1))
 unset GIT_AUTHOR_DATE
 unset GIT_COMMITTER_DATE
 
-# --- 2026-04-25 (Sabtu) ---
-echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-04-25..."
+# --- 2026-05-12 (Selasa) ---
+echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-05-12..."
 
-# Commit 1 dari 3
-GIT_AUTHOR_DATE="2026-04-25T11:13:19"
+# Commit 1 dari 2
+GIT_AUTHOR_DATE="2026-05-12T11:40:46"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-25-0" >> README.md
+sed -i '1i<!-- Updated: 2026-05-12-0 -->' README.md
 git add README.md
 git commit -m "Perbarui tabel fitur" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
-# Commit 2 dari 3
-GIT_AUTHOR_DATE="2026-04-25T16:44:50"
+# Commit 2 dari 2
+GIT_AUTHOR_DATE="2026-05-12T16:11:17"
 GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
 export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-25-1 -->' README.md
+echo "  - Updated 2026-05-12-1" >> README.md
 git add README.md
 git commit -m "Update README documentation" > /dev/null 2>&1 || true
-CURRENT=$((CURRENT+1))
-
-# Commit 3 dari 3
-GIT_AUTHOR_DATE="2026-04-25T08:15:21"
-GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
-export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-25-2" >> README.md
-git add README.md
-git commit -m "Perbaiki typo di README" > /dev/null 2>&1 || true
-CURRENT=$((CURRENT+1))
-
-unset GIT_AUTHOR_DATE
-unset GIT_COMMITTER_DATE
-
-# --- 2026-04-26 (Minggu) ---
-echo "[$((CURRENT+1))/$TOTAL_COMMITS] Commit untuk 2026-04-26..."
-
-# Commit 1 dari 2
-GIT_AUTHOR_DATE="2026-04-26T19:44:50"
-GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
-export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-sed -i '1i<!-- Updated: 2026-04-26-0 -->' README.md
-git add README.md
-git commit -m "Tambahkan deskripsi fitur baru" > /dev/null 2>&1 || true
-CURRENT=$((CURRENT+1))
-
-# Commit 2 dari 2
-GIT_AUTHOR_DATE="2026-04-26T11:15:21"
-GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
-export GIT_AUTHOR_DATE GIT_COMMITTER_DATE
-echo "  - Updated 2026-04-26-1" >> README.md
-git add README.md
-git commit -m "Update installation guide" > /dev/null 2>&1 || true
 CURRENT=$((CURRENT+1))
 
 unset GIT_AUTHOR_DATE
